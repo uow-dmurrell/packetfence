@@ -92,8 +92,8 @@ Requires: mod_perl, mod_qos, mod_evasive
 requires: libapreq2
 Requires: dhcp
 Requires: redis
-Requires: freeradius >= 2.2.8-34, freeradius-mysql, freeradius-perl, freeradius-ldap, freeradius-utils
 %{?el6:Requires: freeradius >= 2.2.10, freeradius-mysql, freeradius-perl, freeradius-ldap, freeradius-utils}
+%{?el6:Requires: freeradius >= 2.2.8-34, freeradius-mysql, freeradius-perl, freeradius-ldap, freeradius-utils}
 %{?el7:Requires: freeradius < 3.0, freeradius-mysql, freeradius-perl, freeradius-ldap, freeradius-utils}
 Requires: make
 Requires: net-tools
@@ -425,7 +425,9 @@ done
 
 %install
 %{__rm} -rf $RPM_BUILD_ROOT
+%if 0%{?el6}
 %{__install} -D -m0755 packetfence.init $RPM_BUILD_ROOT%{_initrddir}/packetfence
+%endif
 # creating path components that are no longer in the tarball since we moved to git
 %{__install} -d $RPM_BUILD_ROOT/usr/local/pf/addons
 %{__install} -d $RPM_BUILD_ROOT/usr/local/pf/addons/AD
@@ -503,15 +505,23 @@ cp -r README $RPM_BUILD_ROOT/usr/local/pf/
 cp -r README.network-devices $RPM_BUILD_ROOT/usr/local/pf/
 cp -r UPGRADE.asciidoc $RPM_BUILD_ROOT/usr/local/pf/
 cp -r UPGRADE.old $RPM_BUILD_ROOT/usr/local/pf/
-#pfconfig
+#pfconfigi rhel6
+%if 0%{?el6}
 %{__install} -D -m0755 addons/pfconfig/pfconfig.init $RPM_BUILD_ROOT%{_initrddir}/packetfence-config
 %{__install} -D -m0755 packetfence-redis-cache.init $RPM_BUILD_ROOT%{_initrddir}/packetfence-redis-cache
+%endif
 #end pfconfig
 # logfiles
 for LOG in %logfiles; do
     touch $RPM_BUILD_ROOT%logdir/$LOG
 done
-
+#systemd packetfence and pfconfig for rhel7
+%if 0%{?el7}
+cp -r addons/systemd/packetfence.service /usr/lib/systemd/system/
+cp -r addons/systemd/pfconfig.service /usr/lib/systemd/system/
+systemctl enable packetfence
+systemctl enable pfconfig 
+%endif
 #start create symlinks
 curdir=`pwd`
 
