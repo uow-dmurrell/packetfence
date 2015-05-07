@@ -282,7 +282,7 @@ sub desAssociate : Public {
     sleep $pf::config::Config{'trapping'}{'wait_for_redirect'};
 
     $logger->info("[$postdata{'mac'}] DesAssociating mac on switch (".$switch->{'_id'}.")");
-    $switch->$deauthTechniques($postdata{'mac'});
+    $switch->$deauthTechniques($postdata{'mac'},%postdata);
 }
 
 sub firewall : Public {

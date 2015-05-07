@@ -503,6 +503,7 @@ sub authenticationLogin : Private {
                 "username"  => $username,
                 "source_id" => $source_id,
                 "source_match" => $source_id,
+                "password" => $password,
             );
         } else {
             $c->error($message);
