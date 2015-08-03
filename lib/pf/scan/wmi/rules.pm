@@ -26,6 +26,8 @@ our %RULE_OPS = (
     is_not => sub { $_[0] ne $_[1] ? 1 : 0  },
     match => sub { $_[0] =~ $_[1] ? 1 : 0  },
     match_not => sub { $_[0] !~ $_[1] ? 1 : 0  },
+    great_eq_than => sub { $_[0] ge $_[1] ? 1 : 0  },
+    less_eq_than => sub { $_[0] le $_[1] ? 1 : 0  },
 );
 
 =head1 SUBROUTINES
@@ -118,6 +120,9 @@ sub parseResult {
 
     my $response = {};
 
+    use Data::Dumper;
+    my $logger = Log::Log4perl::get_logger();
+    $logger->debug('WMI RESULT' . Dumper($response));
     shift @answer;
     my @entries = split(/\|/,shift @answer);
 
