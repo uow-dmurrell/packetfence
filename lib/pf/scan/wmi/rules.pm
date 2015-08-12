@@ -20,6 +20,8 @@ use Log::Log4perl;
 use Net::WMIClient qw(wmiclient);
 use Config::IniFiles;
 use pf::api::jsonrpcclient;
+use List::MoreUtils qw(any);
+use pf::log;
 
 our %RULE_OPS = (
     is => sub { $_[0] eq $_[1] ? 1 : 0  },
@@ -28,6 +30,11 @@ our %RULE_OPS = (
     match_not => sub { $_[0] !~ $_[1] ? 1 : 0  },
     great_eq_than => sub { $_[0] ge $_[1] ? 1 : 0  },
     less_eq_than => sub { $_[0] le $_[1] ? 1 : 0  },
+    matches_in_list => sub {
+       my ($value, $compare_with) = @_;
+       my @compare = split ',', $compare_with;
+       return any { $value =~ /$_/ } @compare;
+    }
 );
 
 =head1 SUBROUTINES
@@ -120,9 +127,6 @@ sub parseResult {
 
     my $response = {};
 
-    use Data::Dumper;
-    my $logger = Log::Log4perl::get_logger();
-    $logger->debug('WMI RESULT' . Dumper($response));
     shift @answer;
     my @entries = split(/\|/,shift @answer);
 

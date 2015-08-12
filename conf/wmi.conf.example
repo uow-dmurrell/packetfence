@@ -38,3 +38,17 @@ value = explorer.exe
 [1:explorer]
 action = allow
 EOT
+
+#P2P software installed
+[p2p]
+request=select * from Win32_Product
+action= <<EOT
+[P2P]
+attribute = Caption
+operator = matches_in_list
+value = Global Downloader,Anomos,ApexDC++,Ares,Vuze,Shareaza,Lphant,StrongDC++,BitComet,BitLord,BitRope Sharing,BitTorrent,µTorrent,BitTorrent Sync,TurboBT,BitSpirit,Glace Space,Yet ABC,CitrixWire,Bit Che,Crux P2P,Artemis,DBGO,Deepnet Explorer,Deluge,Easy File Sharing Web Server,ShareIT,ExoSee,FeyAccelerator,FeyTorrents,Free Download Manager,FrostWire,FrostWire,Gigatribe,TurboWire,Sharetastic,Movie Torrent,Gygan,GetRight,Lightning Download,Hermes,BitTornado,Gnucleus,MP2P Servent,Manolito,Piolet,eDonkey,Metacafe,BearShare,MyNapster,Nodezilla client,Policy Patrol Secure File Transfer Server,Policy Patrol Secure File Transfer Agent For Exchange,P2P Rocket,Emerald P2P UltraPeer,Sapphire P2P Rush,SpeedLord,LimeRunner,BitHit,Sharin'Hood,Miro,Phex,Tribler,TrustyFiles,P2P Share Spy,RetroShare,Speedy P2P Movie Finder,SababaDC,Samsung AllShare,Ares,ShareGhost,LimeZilla,ShareZilla,SoMud,Soul Seek,SoulseekQt,SuperNZB,G3 Torrent,StealthNet,Transmission,qBittorrent,Torrent Swapper,TudZu,Tixati,Torrent Captor,TorrentRover,Trilix,TruxShare,VIP Torrent,OmniPeek,WireStack,eMule,TorrentSearch,gtk-gnutella,Cabos,iMesh,MiPony,Torrent Opener,7-Zip
+
+[1:P2P]
+action=trigger_violation
+action_param = mac = $mac, tid = 30, type = INTERNAL
+EOT
