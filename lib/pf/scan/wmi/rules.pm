@@ -34,6 +34,11 @@ our %RULE_OPS = (
        my ($value, $compare_with) = @_;
        my @compare = split ',', $compare_with;
        return any { $value =~ /$_/ } @compare;
+    },
+    matches_not_in_list => sub {
+       my ($value, $compare_with) = @_;
+       my @compare = split ',', $compare_with;
+       return any { $value !~ /$_/ } @compare;
     }
 );
 

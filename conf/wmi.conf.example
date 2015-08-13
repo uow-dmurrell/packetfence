@@ -52,3 +52,17 @@ value = Global Downloader,Anomos,ApexDC++,Ares,Vuze,Shareaza,Lphant,StrongDC++,B
 action=trigger_violation
 action_param = mac = $mac, tid = 30, type = INTERNAL
 EOT
+
+# Searching for AntiVirus software installed
+[AntiVirus]
+request=select * from Win32_Product
+action= <<EOT
+[AntiVirus]
+attribute = Caption
+operator = matches_not_in_list
+value=360 Total Security,Ad-Aware,AhnLab V3,Avira AntiVir,Avast,AVG,BitDefender,BullGuard,ClamWin,Comodo,Dr. Web,ESET NOD32,Fortinet,F-Prot,F-Secure,G Data Software,Ikarus,Kaspersky,McAfee,Microsoft Security Essentials,Norton,Panda,SecureAnywhere,Sophos,TrendMicro,VIPRE,Zone Alarm
+
+[1:AntiVirus]
+action=trigger_violation
+action_param = mac = $mac, tid = 31, type = INTERNAL
+EOT
