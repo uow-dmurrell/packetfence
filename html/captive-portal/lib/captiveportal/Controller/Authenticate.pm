@@ -23,9 +23,9 @@ before postAuthentication => sub {
     my $source_id = $session->{source_id};
     return unless defined $source_id;
     my $source = getAuthenticationSource($source_id);
-    return unless defined $source;
+    return unless defined $source && $source->can("post_auth_step");
     my $continue_post_auth = $session->{continue_post_auth};
-    unless ($continue_post_auth || isdisabled($source->post_auth_page)  ) {
+    unless ($continue_post_auth || isdisabled($source->post_auth_step)  ) {
         $c->stash({
             template => 'post-auth-page.html'
         });
