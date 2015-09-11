@@ -32,6 +32,17 @@ has_field 'stripped_user_name' =>
    tags => { after_element => \&help,
              help => 'Use stripped username returned by RADIUS to test the following rules.' },
   );
+has_field 'post_auth_step' =>
+  (
+   type            => 'Toggle',
+   checkbox_value  => 'yes',
+   unchecked_value => 'no',
+   default         => 'no',
+   label           => 'Add a Post Auth Step ',
+   tags => { after_element => \&help,
+             help => 'Allow you to add a post auth step by configuring the template XXX' },
+  );
+
 
 =head2 validate
 
