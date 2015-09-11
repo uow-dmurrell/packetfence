@@ -60,6 +60,7 @@ package WEB;
 # normal flow
 Readonly::Scalar our $URL_ACCESS                => '/access';
 Readonly::Scalar our $URL_AUTHENTICATE          => '/authenticate';
+Readonly::Scalar our $URL_POST_AUTH_STEP        => '/authenticate/continue_post_auth';
 Readonly::Scalar our $URL_AUP                   => '/aup';
 Readonly::Scalar our $URL_BILLING               => '/pay';
 Readonly::Scalar our $URL_CAPTIVE_PORTAL        => '/captive-portal';
