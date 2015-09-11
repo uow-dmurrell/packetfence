@@ -3,9 +3,10 @@ use Moose;
 
 use pf::util;
 
-BEGIN { extends 'captiveportal::PacketFence::Controller::Authenticate'; }
+BEGIN {extends 'captiveportal::PacketFence::Controller::Authenticate';}
 
 use pf::util;
+use pf::authentication;
 
 =head1 NAME
 
@@ -19,24 +20,24 @@ captiveportal::Controller::Root - Root Controller for captiveportal
 
 before postAuthentication => sub {
     my ($self, $c) = @_;
-    my $session = $c->session;
+    my $session   = $c->session;
     my $source_id = $session->{source_id};
     return unless defined $source_id;
     my $source = getAuthenticationSource($source_id);
     return unless defined $source && $source->can("post_auth_step");
     my $continue_post_auth = $session->{continue_post_auth};
-    unless ($continue_post_auth || isdisabled($source->post_auth_step)  ) {
-        $c->stash({
-            template => 'post-auth-page.html'
-        });
+    unless ($continue_post_auth || isdisabled($source->post_auth_step)) {
+        $c->stash({template => 'post-auth-page.html'});
         $c->detach();
     }
 };
 
-sub continue_post_auth :Local {
+sub continue_post_auth : Local {
     my ($self, $c) = @_;
     $c->session->{continue_post_auth} = 1;
-    $c->detach('postAuthentication');
+    $c->forward('postAuthentication');
+    $c->forward( 'CaptivePortal' => 'webNodeRegister', [$c->stash->{info}->{pid}, %{$c->stash->{info}}] );
+    $c->forward( 'CaptivePortal' => 'endPortalSession' );
 }
 
 =head1 AUTHOR
