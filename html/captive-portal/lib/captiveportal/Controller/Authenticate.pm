@@ -1,7 +1,11 @@
 package captiveportal::Controller::Authenticate;
 use Moose;
 
+use pf::util;
+
 BEGIN { extends 'captiveportal::PacketFence::Controller::Authenticate'; }
+
+use pf::util;
 
 =head1 NAME
 
@@ -12,6 +16,28 @@ captiveportal::Controller::Root - Root Controller for captiveportal
 [enter your description here]
 
 =cut
+
+before postAuthentication => sub {
+    my ($self, $c) = @_;
+    my $session = $c->session;
+    my $source_id = $session->{source_id};
+    return unless defined $source_id;
+    my $source = getAuthenticationSource($source_id);
+    return unless defined $source;
+    my $continue_post_auth = $session->{continue_post_auth};
+    unless ($continue_post_auth || isdisabled($source->post_auth_page)  ) {
+        $c->stash({
+            template => 'post-auth-page.html'
+        });
+        $c->detach();
+    }
+};
+
+sub continue_post_auth :Local {
+    my ($self, $c) = @_;
+    $c->session->{continue_post_auth} = 1;
+    $c->detach('postAuthentication');
+}
 
 =head1 AUTHOR
 
