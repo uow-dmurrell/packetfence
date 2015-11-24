@@ -228,6 +228,7 @@ sub node_db_prepare {
            IF(ISNULL(locationlog.connection_sub_type), '', locationlog.connection_sub_type) as last_connection_sub_type,
            locationlog.dot1x_username as last_dot1x_username, locationlog.ssid as last_ssid,
            locationlog.stripped_user_name as stripped_user_name, locationlog.realm as realm,
+           locationlog.switch_mac as last_switch_mac,
            locationlog.start_time as last_start_time,
            UNIX_TIMESTAMP(locationlog.start_time) as last_start_timestamp
        FROM locationlog
@@ -274,6 +275,7 @@ sub node_db_prepare {
             IF(ISNULL(locationlog.connection_type), '', locationlog.connection_type) as last_connection_type,
             locationlog.dot1x_username as last_dot1x_username, locationlog.ssid as last_ssid,
             locationlog.stripped_user_name as stripped_user_name, locationlog.realm as realm,
+            locationlog.switch_mac as last_switch_mac,
             iplog.ip as last_ip,
             COUNT(DISTINCT violation.id) as nbopenviolations,
             node.notes
