@@ -76,16 +76,6 @@ sub parseUrl {
 
 }
 
-=item returnRoleAttribute
-
-What RADIUS Attribute (usually VSA) should the role returned into.
-
-=cut
-
-sub returnRoleAttribute {
-    return 'Airespace-ACL-Name';
-}
-
 =head2 deauthTechniques
 
 Return the reference to the deauth technique or the default deauth technique.
@@ -148,13 +138,12 @@ sub returnRadiusAccessAccept {
             $logger->info("Adding web authentication redirection to reply using role : $role and URL : $redirect_url.");
             push @av_pairs, "url-redirect=".$redirect_url;
 
-            # remove the role if any as we push the redirection ACL along with it's role
-            delete $radius_reply_ref->{$self->returnRoleAttribute()};
         }
 
     }
 
     $radius_reply_ref->{'Cisco-AVPair'} = \@av_pairs;
+    $radius_reply_ref->{'Airespace-ACL-Name'} = $role;
 
     my $filter = pf::access_filter::radius->new;
     my $rule = $filter->test('returnRadiusAccessAccept', $args);
@@ -288,15 +277,8 @@ sub radiusDisconnect {
             $attributes_ref = {
                 'Calling-Station-Id' => $mac,
             };
-            my $vsa = [
-                {
-                vendor => "Cisco",
-                attribute => "Cisco-AVPair",
-                value => "audit-session-id=$node_info->{'sessionid'}",
-                },
-            ];
 
-            $response = perform_disconnect($connection_info, $attributes_ref, $vsa);
+            $response = perform_disconnect($connection_info, $attributes_ref);
         } 
     } catch {
         chomp;
