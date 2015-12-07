@@ -25,7 +25,7 @@ The only workaround is to have the DHCP traffic forwarded to PacketFence.
 use strict;
 use warnings;
 
-use base ('pf::Switch::Meraki::AP_http');
+use base ('pf::Switch');
 
 use Net::SNMP;
 use Try::Tiny;
@@ -74,6 +74,17 @@ sub parseUrl {
     
     return ($$req->param('client_mac'),$$req->param('wlan'),$$req->param('client_ip'),$$req->param('redirect'),$$req->param('switch_url'),$$req->param('statusCode'));
 
+}
+
+=head2 getVersion - obtain image version information from switch
+
+=cut
+
+sub getVersion {
+    my ($self) = @_;
+    my $logger = $self->logger;
+    $logger->info("we don't know how to determine the version through SNMP !");
+    return '1';
 }
 
 =item returnRoleAttribute
@@ -131,7 +142,7 @@ sub returnRadiusAccessAccept {
 
     my @av_pairs = defined($radius_reply_ref->{'Cisco-AVPair'}) ? @{$radius_reply_ref->{'Cisco-AVPair'}} : ();
     my $role = $self->getRoleByName($args->{'user_role'});
-    if(defined($role) && $role ne ""){
+    if(defined($role) && $role ne "" && isenabled($self->{_RoleMap})) {
         my $mac = $args->{'mac'};
         my $node_info = $args->{'node_info'};
         my $violation = pf::violation::violation_view_top($mac);
