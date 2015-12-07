@@ -76,6 +76,16 @@ sub parseUrl {
 
 }
 
+=item returnRoleAttribute
+
+What RADIUS Attribute (usually VSA) should the role returned into.
+
+=cut
+
+sub returnRoleAttribute {
+    return 'Airespace-ACL-Name';
+}
+
 =head2 deauthTechniques
 
 Return the reference to the deauth technique or the default deauth technique.
@@ -139,11 +149,15 @@ sub returnRadiusAccessAccept {
             push @av_pairs, "url-redirect=".$redirect_url;
 
         }
+        if ($node_info->{'status'} eq $pf::node::STATUS_REGISTERED && !defined($violation)) {
+           $radius_reply_ref->{$self->returnRoleAttribute} = $role;
+        }
 
     }
 
     $radius_reply_ref->{'Cisco-AVPair'} = \@av_pairs;
-    $radius_reply_ref->{'Airespace-ACL-Name'} = $role;
+    use Data::Dumper;
+    $logger->info('TEST' . Dumper($radius_reply_ref));
 
     my $filter = pf::access_filter::radius->new;
     my $rule = $filter->test('returnRadiusAccessAccept', $args);
