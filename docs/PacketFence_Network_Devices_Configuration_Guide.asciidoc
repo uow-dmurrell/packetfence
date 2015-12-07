@@ -3921,19 +3921,25 @@ NOTE: Even if you enabled the bridge mode on the access point, it will still sen
 Version 2
 +++++++++
 
+NOTE: While using the WebAuth mode on the Meraki controller with a version superior to X.X, you need to use "Role mapping by Switch Role" on the switch configuration. More details below.
+
 In the version X.X of the Meraki firmware, the WebAuth mode has been improved and now allow CoA, and the use of redirect-URL instead of passing by the external captive portal.
 
-If you have the version X.X, the configuration for your SSID should look like this:
+The configuration for your SSID should look like this:
 
 image::docs/images/Meraki-config-1.png[scaledwidth="100%",alt="Security and RADIUS configuration"]
 
 image::docs/images/Meraki-config-2.png[scaledwidth="100%",alt="Network configuration"]
+
+NOTE: It is mandatory that you use the Airespace-ACL-Name as "RADIUS attribute specifying group policy name".
 
 While done you will need to add the address for the redirection in the switch configuration in PacketFence. Add the Meraki IP to PacketFence, then choose the module "Meraki cloud controller v2" and add the portal interface ip in the "Portal URL" section. It should look like the following:
 
 ----
  http://192.168.1.5
 ----
+
+The switch Role you will enter, will be the on you created as a group policy in the Meraki configration. To do so go through `Network-wide->Group policies`, here you can create policies that will be applied to the devices which register through this AP.
 
 Also make sure to select RADIUS as the deauthentication method.
 
