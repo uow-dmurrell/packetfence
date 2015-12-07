@@ -3939,7 +3939,7 @@ While done you will need to add the address for the redirection in the switch co
  http://192.168.1.5
 ----
 
-The switch Role you will enter, will be the on you created as a group policy in the Meraki configration. To do so go through `Network-wide->Group policies`, here you can create policies that will be applied to the devices which register through this AP.
+The switch Role you will enter, will be the one you created as a group policy in the Meraki configration. To do so, go through `Network-wide->Group policies`, here you can create policies that will be applied to the devices which register through this Meraki network.
 
 Also make sure to select RADIUS as the deauthentication method.
 
