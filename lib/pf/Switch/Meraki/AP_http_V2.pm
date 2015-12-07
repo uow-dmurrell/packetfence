@@ -152,12 +152,9 @@ sub returnRadiusAccessAccept {
         if ($node_info->{'status'} eq $pf::node::STATUS_REGISTERED && !defined($violation)) {
            $radius_reply_ref->{$self->returnRoleAttribute} = $role;
         }
-
     }
 
     $radius_reply_ref->{'Cisco-AVPair'} = \@av_pairs;
-    use Data::Dumper;
-    $logger->info('TEST' . Dumper($radius_reply_ref));
 
     my $filter = pf::access_filter::radius->new;
     my $rule = $filter->test('returnRadiusAccessAccept', $args);
