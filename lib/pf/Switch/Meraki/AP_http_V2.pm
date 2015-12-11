@@ -15,11 +15,6 @@ Developed and tested on a MR12 access point
 
 =head1 BUGS AND LIMITATIONS
 
-=head2 client IP cannot be computed from parseUrl
-
-The Meraki sends a NATed IP address in the URL even though the client is bridged.
-The only workaround is to have the DHCP traffic forwarded to PacketFence.
-
 =cut
 
 use strict;
@@ -53,28 +48,6 @@ sub description { 'Meraki cloud controller v2' }
 sub supportsWirelessMacAuth { return $TRUE; }
 sub supportsExternalPortal { return $TRUE; }
 sub supportsWirelessDot1x { return $TRUE; }
-sub supportsWebFormRegistration { return $FALSE }
-
-=head2 parseUrl
-
-This is called when we receive a http request from the device and return specific attributes:
-
-client mac address
-SSID
-client ip address
-redirect url
-grant url
-status code
-
-=cut
-
-sub parseUrl {
-    my($self, $req, $r) = @_;
-    my $logger = $self->logger;
-    
-    return ($$req->param('client_mac'),$$req->param('wlan'),$$req->param('client_ip'),$$req->param('redirect'),$$req->param('switch_url'),$$req->param('statusCode'));
-
-}
 
 =head2 getVersion - obtain image version information from switch
 
@@ -192,8 +165,6 @@ sub deauthenticateMacDefault {
     }
 
     $logger->debug("deauthenticate $mac using RADIUS Disconnect-Request deauth method");
-    # TODO push Login-User => 1 (RFC2865) in pf::radius::constants if someone ever reads this
-    # (not done because it doesn't exist in current branch)
     return $self->radiusDisconnect( $mac );
 }
 
