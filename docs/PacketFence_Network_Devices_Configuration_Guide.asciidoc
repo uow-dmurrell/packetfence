@@ -3937,7 +3937,13 @@ When done you will need to add the address for the redirection in the switch con
 
 image::docs/images/Meraki-config-portal.png[scaledwidth="100%",alt="Portal URL"] #TO ADD
 
-The switch role you will enter, will be the one you created as a group policy in the Meraki configration. To do so, go through `Network-wide->Group policies`, here you can create policies that will be applied to the devices which register through this Meraki network.
+Next, configure the roles for the devices on your network. Go in `Network-wide->Group policies`, then you will be able to create policies that can be configured in the roles in the switch configuration in PacketFence. Creation of the policy `Guest devices`:
+
+image::docs/images/Meraki-config-policy.png[scaledwidth="100%",alt="Group policies"]
+
+Role configuration in PacketFence:
+
+image::docs/images/Meraki-config-role.png[scaledwidth="100%",alt="Role configuration"]
 
 Mikrotik
 ~~~~~~~~
