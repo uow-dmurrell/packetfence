@@ -238,7 +238,7 @@ sub radiusDisconnect {
         $attributes_ref = { %$attributes_ref, %$add_attributes_ref };
 
         # We send a CoA to 802.1x users
-        if( ($connection_type eq $WIRELESS_802_1X) ) {
+        if( ($connection_type{$node_info->{connection_type}} eq $WIRELESS_802_1X) ) {
 
             my $vsa = [
                 {
