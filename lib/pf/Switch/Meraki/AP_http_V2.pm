@@ -237,36 +237,19 @@ sub radiusDisconnect {
         # merging additional attributes provided by caller to the standard attributes
         $attributes_ref = { %$attributes_ref, %$add_attributes_ref };
 
-        # We send a CoA to 802.1x users
-        if( ($connection_type{$node_info->{connection_type}} eq $WIRELESS_802_1X) ) {
-
-            my $vsa = [
-                {
-                vendor => "Cisco",
-                attribute => "Cisco-AVPair",
-                value => "audit-session-id=$node_info->{'sessionid'}",
-                },
-                {
-                vendor => "Cisco",
-                attribute => "Cisco-AVPair",
-                value => "subscriber:command=reauthenticate",
-                },
-            ];
-            $response = perform_coa($connection_info, $attributes_ref, $vsa);
-        }
-        else {
-            $connection_info = {
-                nas_ip => $send_disconnect_to,
-                secret => $self->{'_radiusSecret'},
-                LocalAddr => $self->deauth_source_ip(),
-                nas_port => $port_to_disconnect,
-            };
-            $attributes_ref = {
-                'Calling-Station-Id' => $mac,
-            };
-
-            $response = perform_disconnect($connection_info, $attributes_ref);
-        } 
+        my $vsa = [
+            {
+            vendor => "Cisco",
+            attribute => "Cisco-AVPair",
+            value => "audit-session-id=$node_info->{'sessionid'}",
+            },
+            {
+            vendor => "Cisco",
+            attribute => "Cisco-AVPair",
+            value => "subscriber:command=reauthenticate",
+            },
+        ];
+        $response = perform_coa($connection_info, $attributes_ref, $vsa);
     } catch {
         chomp;
         $logger->warn("Unable to perform RADIUS CoA-Request on (".$self->{'_id'}."): $_");
