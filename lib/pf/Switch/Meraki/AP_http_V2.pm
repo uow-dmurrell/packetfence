@@ -237,13 +237,8 @@ sub radiusDisconnect {
         # merging additional attributes provided by caller to the standard attributes
         $attributes_ref = { %$attributes_ref, %$add_attributes_ref };
 
-        # Roles are configured and the user should have one.
-        # We send a regular disconnect if there is an open trapping violation
-        # to ensure the VLAN is actually changed to the isolation VLAN.
-        if (  defined($role) &&
-            ( violation_count_reevaluate_access($mac) == 0 )  &&
-            ( $node_info->{'status'} eq 'reg' )
-           ) {
+        # We send a CoA to 802.1x users
+        if( ($connection_type eq $WIRELESS_802_1X) ) {
 
             my $vsa = [
                 {
@@ -258,7 +253,6 @@ sub radiusDisconnect {
                 },
             ];
             $response = perform_coa($connection_info, $attributes_ref, $vsa);
-
         }
         else {
             $connection_info = {
