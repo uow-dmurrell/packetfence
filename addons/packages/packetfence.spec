@@ -1251,7 +1251,6 @@ fi
 
 %files -n %{real_name}-config
 %defattr(-, pf, pf)
-=======
 %if 0%{?el6}
 %attr(0755, root, root) %{_initrddir}/packetfence-config
 %endif
