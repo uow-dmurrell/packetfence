@@ -35,7 +35,7 @@ use pf::config::util;
 use pf::violation;
 use pf::role::custom $ROLE_API_LEVEL;
 use pf::floatingdevice::custom;
-use pf::radius_accounting_log qw(radius_accounting_log_add radius_accounting_log_update radius_accounting_log_stop);
+use pf::radius_accounting_log qw(radius_accounting_log_add radius_accounting_log_update radius_accounting_log_close);
 # constants used by this module are provided by
 use pf::radius::constants;
 use List::Util qw(first);
@@ -298,10 +298,10 @@ sub accounting {
     my ($nas_port_type, $eap_type, $mac, $port, $user_name, $nas_port_id, $session_id) = $switch->parseRequest($radius_request);
     my %FIELDS = {};
     $self->_parse_accounting($radius_request, \%FIELDS);
-    %FIELDS{'nac'} = $mac;
+    $FIELDS{'mac'} = $mac;
     radius_accounting_log_add(%FIELDS) if $radius_request->{'Acct-Status-Type'} eq 'Start';
     radius_accounting_log_update($mac,%FIELDS) if $radius_request->{'Acct-Status-Type'} eq 'Interim-Update';
-    radius_accounting_log_stop($mac,%FIELDS) if $radius_request->{'Acct-Status-Type'} eq 'Stop';
+    radius_accounting_log_close($mac,%FIELDS) if $radius_request->{'Acct-Status-Type'} eq 'Stop';
 
     if ($isStop || $isUpdate) {
 
@@ -350,10 +350,10 @@ Takes FreeRADIUS' RAD_REQUEST hash and process it to return accounting attribute
 =cut
 
 sub _parse_accounting {
-    my ($self, $radius_request, %FIELDS) = @_;
+    my ($self, $radius_request, $FIELDS) = @_;
 
     $$FIELDS{'acctsessiontime'} = $radius_request->{'Acct-Session-Time'} if exists($radius_request->{'Acct-Session-Time'});
-    $$FIELDS{'acctinputoctets'} - $radius_request->{'Acct-Input-Octets'} if exists($radius_request->{'Acct-Input-Octets'});
+    $$FIELDS{'acctinputoctets'} = $radius_request->{'Acct-Input-Octets'} if exists($radius_request->{'Acct-Input-Octets'});
     $$FIELDS{'acctoutputoctets'} = $radius_request->{'Acct-Output-Octets'} if exists($radius_request->{'Acct-Output-Octets'});
     $$FIELDS{'acctinputpackets'} = $radius_request->{'Acct-Input-Packets'} if exists($radius_request->{'Acct-Input-Packets'});
     $$FIELDS{'acctoutputpackets'} = $radius_request->{'Acct-Output-Packets'} if exists($radius_request->{'Acct-Output-Packets'});
